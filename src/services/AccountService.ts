@@ -1,26 +1,24 @@
-import {API_BASE_URL} from "@/parameters";
-import {ApiResponse} from "@/helpers/ApiResponse";
+import axios from 'axios';
+import RegisterDto from "@/models/account/RegisterDto";
+import ApiResponse from "@/models/api/ApiResponse";
 
 
-export class AccountService {
-    private axios = require('axios');
+class AccountService
+{
 
-    public async Register(username: string, email: string, password: string, confirmPassword: string): Promise<ApiResponse> {
-        return await this.axios.post(API_BASE_URL + "Accounts/Register", {
-            body: {
-                username: username,
-                email: email,
-                password: password,
-                confirmPassword: confirmPassword
-            }
-        });
+
+    public async CreateAccountAsync(model: RegisterDto): Promise<ApiResponse>
+    {
+        return await axios.post('Account/Register', model);
     }
 
-    public async Remove(userToken: string): Promise<ApiResponse> {
-        return await this.axios.post(API_BASE_URL + "Accounts/Remove", {
-            headers: {
-                Authorization: "Bearer " + userToken
-            }
-        });
-    }
+    // public async Remove(userToken: string): Promise<ApiResponse> {
+    //     return await this.axios.post(API_BASE_URL + "Accounts/Remove", {
+    //         headers: {
+    //             Authorization: "Bearer " + userToken
+    //         }
+    //     });
+    // }
 }
+
+export default new AccountService();

@@ -1,5 +1,5 @@
 import {API_BASE_URL} from "@/parameters";
-import {ApiResponse} from "@/helpers/ApiResponse";
+import ApiResponse from "@/models/api/ApiResponse";
 
 export class UserService {
     private axios = require('axios');
