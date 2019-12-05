@@ -78,8 +78,8 @@
                 if (entry.name && entry.description)
                 {
                     let output: NavBarItem = {
-                        routeName: entry.description,
-                        description: entry.name,
+                        routeName: entry.name,
+                        description: entry.description,
                         icon: entry.icon
 
                     };

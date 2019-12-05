@@ -65,8 +65,10 @@
                                 </v-form>
                             </v-card-text>
                             <v-card-actions>
+<!--                                <router-link :to="{ name: 'account.login' }">Back to login</router-link>-->
+                                <v-btn color="secondary" outlined :to="{ name: 'account.login' }">Back to login</v-btn>
                                 <v-spacer />
-                                <v-btn color="primary" @click="tryToRegister()" :loading="isRegistering" :disabled="isRegistering">CREATE ACCOUNT</v-btn>
+                                <v-btn color="primary" @click="tryToRegister()" :loading="isRegistering" :disabled="isRegistering">Create account</v-btn>
                             </v-card-actions>
                         </v-card>
                     </v-col>

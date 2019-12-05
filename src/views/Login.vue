@@ -23,26 +23,35 @@
                                 <v-toolbar-title>Login form</v-toolbar-title>
                             </v-toolbar>
                             <v-card-text>
-                                <v-form>
+                                <v-alert v-if="errors.length > 0" type="error" outlined>
+                                    Whoops... Something went wrong! Try to fix issues listed below:<br />
+                                    <ul>
+                                        <li :key="index" v-for="(entry, index) in errors">{{ entry }}</li>
+                                    </ul>
+                                </v-alert>
+                                <v-form v-model="isValid" ref="form" lazy-validation>
                                     <v-text-field
                                             label="Login"
-                                            name="login"
+                                            v-model="formData.username"
                                             prepend-icon="mdi-account"
                                             type="text"
+                                            :rules="nameRules"
                                     />
 
                                     <v-text-field
                                             id="password"
                                             label="Password"
-                                            name="password"
+                                            v-model="formData.password"
                                             prepend-icon="mdi-lock"
                                             type="password"
+                                            :rules="passwordRules"
                                     />
                                 </v-form>
                             </v-card-text>
                             <v-card-actions>
+                                <v-btn color="secondary" outlined :to="{ name: 'account.register' }">Sign Up</v-btn>
                                 <v-spacer />
-                                <v-btn color="primary">Login</v-btn>
+                                <v-btn type="submit" color="primary" :disabled="isLogging" :loading="isLogging" @click="onBtnLoginClicked()">Login</v-btn>
                             </v-card-actions>
                         </v-card>
                     </v-col>
@@ -56,11 +65,58 @@
 <script lang="ts">
     import Vue from "vue";
     import {Component} from "vue-property-decorator";
+    import LoginDto from "@/models/account/LoginDto";
+    import AccountService from "@/services/AccountService";
 
     @Component
     export default class LoginView extends Vue
     {
+        public isLogging = false;
+        public isValid = true;
 
+        public formData: LoginDto = {
+            username: '',
+            password: ''
+        };
+
+        public errors: string[] = [];
+
+        public nameRules = [
+            // @ts-ignore
+            v => !!v || 'Name is required'
+        ];
+
+        public passwordRules = [
+            // @ts-ignore
+            v => !!v || 'Password is required'
+        ];
+
+        public async onBtnLoginClicked(): Promise<void> {
+            if (this.isLogging)
+                return;
+
+            this.errors = [];
+
+            // @ts-ignore
+            if (this.$refs.form.validate())
+            {
+                this.isLogging = true;
+            }
+
+            let response = await AccountService.OAuthLogin(this.formData);
+
+            if (response == null || response.status !== 200)
+            {
+                // Invalid credentials
+                this.errors.push('Invalid username and/or password');
+                this.isLogging = false;
+            }
+            else
+            {
+                AccountService.SetAccountToken(response.data.access_token);
+                this.$router.push({ name: 'main.page' });
+            }
+        }
     }
 </script>
 
