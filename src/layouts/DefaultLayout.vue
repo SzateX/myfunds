@@ -49,6 +49,7 @@
 
     import routes from "@/router/routes";
     import NavBarItem from "@/models/navbar/NavBarItem";
+    import AccountService from "@/services/AccountService";
 
     @Component
     export default class DefaultLayout extends Vue
@@ -58,7 +59,7 @@
         public navbarItems: NavBarItem[] = [];
 
 
-        public created() : void
+        public async created() : Promise<void>
         {
             for (let i = 0; i < routes.length; i++)
             {
@@ -68,6 +69,9 @@
                     this.buildNavData(entry.children);
                 }
             }
+
+            let accountData = await AccountService.GetAccountInfo();
+            console.log(accountData);
         }
 
         public buildNavData(childrenData: any): void

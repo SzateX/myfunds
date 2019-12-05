@@ -3,6 +3,7 @@ import RegisterDto from "@/models/account/RegisterDto";
 import ApiResponse from "@/models/api/ApiResponse";
 import LoginDto from "@/models/account/LoginDto";
 import {IDENTITY_SERVICE_BASE_URL} from "@/parameters";
+import AccountDto from "@/models/account/AccountDto";
 
 
 class AccountService
@@ -44,13 +45,10 @@ class AccountService
         return localStorage.getItem(this.localStorageNameKey);
     }
 
-    // public async Remove(userToken: string): Promise<ApiResponse> {
-    //     return await this.axios.post(API_BASE_URL + "Accounts/Remove", {
-    //         headers: {
-    //             Authorization: "Bearer " + userToken
-    //         }
-    //     });
-    // }
+    public async GetAccountInfo(): Promise<AccountDto>
+    {
+        return (await axios.get<AccountDto>('User/GetMe')).data;
+    }
 }
 
 export default new AccountService();
