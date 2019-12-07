@@ -113,7 +113,7 @@
             }
             else
             {
-                AccountService.SetAccountToken(response.data.access_token);
+                await AccountService.SetAccountTokenAsync(response.data.access_token);
                 this.$router.push({ name: 'main.page' });
             }
         }

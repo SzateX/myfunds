@@ -4,6 +4,7 @@ import ApiResponse from "@/models/api/ApiResponse";
 import LoginDto from "@/models/account/LoginDto";
 import {IDENTITY_SERVICE_BASE_URL} from "@/parameters";
 import AccountDto from "@/models/account/AccountDto";
+import AuthService from "@/services/AuthService";
 
 
 class AccountService
@@ -37,8 +38,10 @@ class AccountService
         }
     }
 
-    public SetAccountToken(token: string): void {
+    public async SetAccountTokenAsync(token: string): Promise<void> {
         localStorage.setItem(this.localStorageNameKey, token);
+
+        await AuthService.loadUserData();
     }
 
     public GetAccountToken(): string | null {

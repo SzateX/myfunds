@@ -5,16 +5,24 @@ import axios from 'axios';
 import VueAxios from "vue-axios";
 import { configureAxios } from "@/plugins/axios";
 import vuetify from './plugins/vuetify';
+import AuthService from "@/services/AuthService";
 
 Vue.config.productionTip = false;
 
 configureAxios();
 Vue.use(VueAxios, axios);
 
+async function startVue()
+{
+  await AuthService.loadUserData();
 
-new Vue({
-  router,
-  // @ts-ignore
-  vuetify,
-  render: h => h(App)
-}).$mount('#app');
+  new Vue({
+    router,
+    // @ts-ignore
+    vuetify,
+    render: h => h(App)
+  }).$mount('#app');
+
+}
+
+startVue();

@@ -9,7 +9,8 @@ const routes: any = [
                 name: "main.page",
                 component: () => import('@/components/TempComponent.vue'),
                 icon: "mdi-home",
-                description: "Strona główna"
+                description: "Strona główna",
+                meta: { auth: true }
             }
         ]
     },
