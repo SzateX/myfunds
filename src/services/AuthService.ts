@@ -24,6 +24,10 @@ class AuthService
             }
         }
     }
+
+    public logout(): void {
+        this._loggedAccount = null;
+    }
 }
 
 export default new AuthService();

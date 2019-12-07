@@ -38,6 +38,11 @@ class AccountService
         }
     }
 
+    public logout(): void {
+        localStorage.removeItem(this.localStorageNameKey);
+        AuthService.logout();
+    }
+
     public async SetAccountTokenAsync(token: string): Promise<void> {
         localStorage.setItem(this.localStorageNameKey, token);
 
