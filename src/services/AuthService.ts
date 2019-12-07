@@ -10,6 +10,11 @@ class AuthService
        return this._loggedAccount !== null;
     }
 
+    public get userAccount(): AccountDto
+    {
+        return this._loggedAccount as AccountDto;
+    }
+
     public async loadUserData(): Promise<void> {
         const accessToken = AccountService.GetAccountToken();
         if (accessToken !== null)

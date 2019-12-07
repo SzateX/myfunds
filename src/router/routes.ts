@@ -6,10 +6,10 @@ const routes: any = [
         [
             {
                 path: "",
-                name: "main.page",
+                name: 'main.page',
                 component: () => import('@/components/TempComponent.vue'),
-                icon: "mdi-home",
-                description: "Strona główna",
+                icon: 'mdi-home',
+                description: 'Home',
                 meta: { auth: true }
             }
         ]
