@@ -11,12 +11,11 @@
                         <v-list-item-title class="title">{{ user.userName }}</v-list-item-title>
                         <v-list-item-subtitle>{{ user.email }}</v-list-item-subtitle>
                     </v-list-item-content>
-                </v-list-item>
-                <v-list-item @click="logout()">
-                    <v-list-item-icon><v-icon>mdi-logout</v-icon></v-list-item-icon>
-                    <v-list-item-content>
-                        <v-list-item-title color="success">Log out</v-list-item-title>
-                    </v-list-item-content>
+                    <v-list-item-action link>
+                        <v-btn text icon @click="logout()" title="Log out">
+                            <v-icon>mdi-logout</v-icon>
+                        </v-btn>
+                    </v-list-item-action>
                 </v-list-item>
             </v-list>
 
