@@ -6,6 +6,6 @@ export default interface NewAssetDto
     purchaseDate: string;
     warrantyEndDate: string;
     type: string;
-    userId: number;
+    userId: number | null;
     roomId: number;
 }

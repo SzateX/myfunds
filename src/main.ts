@@ -6,11 +6,15 @@ import VueAxios from "vue-axios";
 import { configureAxios } from "@/plugins/axios";
 import vuetify from './plugins/vuetify';
 import AuthService from "@/services/AuthService";
+import Toasted from 'vue-toasted';
+
+
 
 Vue.config.productionTip = false;
 
 configureAxios();
 Vue.use(VueAxios, axios);
+Vue.use(Toasted);
 
 async function startVue()
 {

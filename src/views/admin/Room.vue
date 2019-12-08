@@ -57,6 +57,12 @@
             <v-card-title>Add new asset</v-card-title>
             <v-card-subtitle>Here you can add new asset</v-card-subtitle>
             <v-card-text>
+                <v-alert v-if="errors.length > 0" type="error" outlined>
+                    Whoops... Something went wrong! Try to fix issues listed below:<br />
+                    <ul>
+                        <li :key="index" v-for="(entry, index) in errors">{{ entry }}</li>
+                    </ul>
+                </v-alert>
                 <v-form ref="formAddAsset">
                     <v-text-field label="Name" v-model="newAsset.name" type="text" />
                     <v-text-field label="Price" v-model="newAsset.price" type="number" />
@@ -97,6 +103,9 @@
                     </v-dialog>
                 </v-form>
             </v-card-text>
+            <v-card-actions>
+                <v-btn color="success" @click="createNewAsset()">ADD NEW ASSET</v-btn>
+            </v-card-actions>
         </v-card>
     </div>
 </template>
@@ -108,6 +117,7 @@
     import AdminBuildingsService from "@/services/AdminBuildingsService";
     import RoomDto from "../../models/buildings/RoomDto";
     import NewAssetDto from "@/models/assets/NewAssetDto";
+    import {GetStringsFromValidationResponse} from "@/helpers/ValidationHelper";
 
     @Component
     export default class Room extends Vue
@@ -121,7 +131,7 @@
             purchaseDate: '',
             roomId: 0,
             type: '',
-            userId: 0,
+            userId: null,
             warrantyEndDate: ''
         };
 
@@ -129,7 +139,58 @@
         private warrantyDate = false;
         private purchaseDate = false;
 
+        private errors: string[] = [];
+
+        public clearForm(): void {
+            this.errors = [];
+            this.newAsset = {
+                inUse: false,
+                name: '',
+                price: 0,
+                purchaseDate: '',
+                roomId: 0,
+                type: '',
+                userId: null,
+                warrantyEndDate: ''
+            };
+        }
+
+        public async createNewAsset(): Promise<void>
+        {
+            this.errors = [];
+            this.newAsset.roomId = parseInt(this.$route.params.id);
+
+            if (this.newAsset.price <= 0)
+            {
+                this.errors.push("Bad price");
+                return;
+            }
+
+            try
+            {
+                const response = await AdminBuildingsService.CreateNewFixedAsset(this.newAsset);
+
+                if (response.status === 201)
+                {
+                    this.$toasted.show('Asset created successfully.', {
+                        duration: 5000
+                    });
+                    this.clearForm();
+                    this.loadData();
+                }
+            }
+            catch (ex)
+            {
+                this.errors = GetStringsFromValidationResponse(ex.response.data);
+            }
+        }
+
         public async created() : Promise<void>
+        {
+            await this.loadData();
+        }
+
+        public async loadData(): Promise<void>
         {
             this.roomInfo = await AdminBuildingsService.GetRoomDataAsync(parseInt(this.$route.params.id));
         }
