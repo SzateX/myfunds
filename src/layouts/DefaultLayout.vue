@@ -24,7 +24,26 @@
             <v-list dense>
                 <v-list-item-group v-model="checkedMenu">
                     <v-list-item
-                            v-for="(item, i) in navbarItems"
+                            v-for="(item, i) in navUserItems"
+                            :key="i"
+                            :to="{ name: item.routeName }"
+                    >
+                        <v-list-item-icon>
+                            <v-icon v-text="item.icon"></v-icon>
+                        </v-list-item-icon>
+                        <v-list-item-content>
+                            <v-list-item-title color="success" v-text="item.description" ></v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
+
+                </v-list-item-group>
+            </v-list>
+
+            <v-divider />
+            <v-list dense>
+                <v-list-item-group v-model="checkedMenu">
+                    <v-list-item
+                            v-for="(item, i) in navAdminItems"
                             :key="i"
                             :to="{ name: item.routeName }"
                     >
@@ -53,7 +72,7 @@
             <v-spacer />
         </v-app-bar>
         <v-content>
-            <v-container fluid>
+            <v-container>
                 <router-view />
             </v-container>
         </v-content>
@@ -79,6 +98,16 @@
 
         public get user(): AccountDto {
             return AuthService.userAccount;
+        }
+
+        public get navUserItems(): NavBarItem[]
+        {
+            return this.navbarItems.filter(t => !t.adminOnly);
+        }
+
+        public get navAdminItems(): NavBarItem[]
+        {
+            return this.navbarItems.filter(t => t.adminOnly);
         }
 
 
@@ -110,8 +139,8 @@
                     let output: NavBarItem = {
                         routeName: entry.name,
                         description: entry.description,
-                        icon: entry.icon
-
+                        icon: entry.icon,
+                        adminOnly: entry.meta !== undefined && entry.meta.admin
                     };
 
                     this.navbarItems.push(output);

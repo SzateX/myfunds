@@ -4,13 +4,38 @@ const routes: any = [
         component: () => import('@/layouts/DefaultLayout.vue'),
         children:
         [
+            // { path: '',  },
             {
-                path: "",
+                path: "dashboard",
                 name: 'main.page',
                 component: () => import('@/components/TempComponent.vue'),
                 icon: 'mdi-home',
                 description: 'Home',
                 meta: { auth: true }
+            },
+
+            {
+                path: 'admin',
+                component: () => import('@/layouts/EmptyLayout.vue'),
+                children:
+                [
+                    {
+                        path: 'users',
+                        name: 'admin.allUsers',
+                        component: () => import('@/views/admin/AllUsers.vue'),
+                        icon: 'mdi-home',
+                        description: 'All users',
+                        meta: { auth: true, admin: true }
+                    },
+                    {
+                        path: 'buildings',
+                        name: 'admin.allBuildings',
+                        component: () => import('@/views/admin/AllBuildings.vue'),
+                        icon: 'mdi-home',
+                        description: 'All buildings',
+                        meta: { auth: true, admin: true }
+                    }
+                ]
             }
         ]
     },
