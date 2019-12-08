@@ -15,7 +15,9 @@
                     <td>{{ entry.id }}</td>
                     <td>{{ getAddressString(entry.address) }}</td>
                     <td class="text-right">
-                        <v-btn outlined color="warning">Edytuj</v-btn>
+                        <v-item-group >
+                            <v-btn outlined color="info" :to="{ name: 'admin.building', params: { id: entry.id } }">INFO</v-btn>&nbsp;
+                        </v-item-group>
                     </td>
                 </tr>
                 </tbody>
