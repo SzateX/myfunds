@@ -8,7 +8,7 @@ const routes: any = [
             {
                 path: "dashboard",
                 name: 'main.page',
-                component: () => import('@/components/TempComponent.vue'),
+                component: () => import('@/views/DefaultUserView.vue'),
                 icon: 'mdi-home',
                 description: 'Home',
                 meta: { auth: true }

@@ -31,6 +31,7 @@
                             <th class="text-left">Purchase Date</th>
                             <th class="text-left">Warranty Date</th>
                             <th class="text-left">Type</th>
+                            <th class="text-left">User</th>
 
                         </tr>
                         </thead>
@@ -43,6 +44,10 @@
                             <td>{{ new Date(entry.purchaseDate).toLocaleDateString() }}</td>
                             <td>{{ new Date(entry.warrantyEndDate).toLocaleDateString() }}</td>
                             <td>{{ entry.typeName }}</td>
+                            <td>
+                                <v-select v-if="entry.type === 2" :items="allUsers" item-text="userName" item-value="id" :value="entry.userId" single-line @change="modifyUserAsset(entry.id, $event)" />
+                                <span v-else>n/a</span>
+                            </td>
 <!--                            <td class="text-right"><v-btn :to="{ name: 'admin.room', params: { id: entry.id } }" color="info" outlined>INFO</v-btn></td>-->
                         </tr>
                         </tbody>
@@ -86,11 +91,11 @@
                     </v-dialog>
 
                     <v-dialog
-                            ref="dialog2"
-                            v-model="warrantyDate"
-                            :return-value.sync="newAsset.warrantyEndDate"
-                            persistent
-                            width="290px"
+                        ref="dialog2"
+                        v-model="warrantyDate"
+                        :return-value.sync="newAsset.warrantyEndDate"
+                        persistent
+                        width="290px"
                     >
                         <template v-slot:activator="{ on }">
                             <v-text-field v-model="newAsset.warrantyEndDate" label="Warranty end date" prepend-icon="mdi-calendar" readonly v-on="on" />
@@ -118,6 +123,10 @@
     import RoomDto from "../../models/buildings/RoomDto";
     import NewAssetDto from "@/models/assets/NewAssetDto";
     import {GetStringsFromValidationResponse} from "@/helpers/ValidationHelper";
+    import FixedAssetDto from "@/models/assets/FixedAssetDto";
+    import AccountDto from "@/models/account/AccountDto";
+    import AdminUserService from "@/services/AdminUserService";
+    import UpdateAssetDto from "@/models/assets/UpdateAssetDto";
 
     @Component
     export default class Room extends Vue
@@ -135,9 +144,15 @@
             warrantyEndDate: ''
         };
 
+        private allUsers: AccountDto[] | null = null;
+
+        private editAssetData: FixedAssetDto | null = null;
+
         private assetTypes = ['Static', 'Rentable'];
         private warrantyDate = false;
         private purchaseDate = false;
+
+        private editAssetDialog = false;
 
         private errors: string[] = [];
 
@@ -190,14 +205,40 @@
             await this.loadData();
         }
 
+        public async modifyUserAsset(assetId: number, user: number): Promise<void>
+        {
+
+            const assetData = await AdminBuildingsService.GetFixedAsset(assetId);
+            const updatedAsset: UpdateAssetDto = {
+                id: assetData.id,
+                inUse: user !== 0,
+                name: assetData.name,
+                price: assetData.price,
+                purchaseDate: assetData.purchaseDate,
+                roomId: assetData.roomId as any,
+                type: assetData.typeName,
+                userId: user === 0 ? null : user,
+                warrantyEndDate: assetData.warrantyEndDate
+            };
+
+            const response = await AdminBuildingsService.UpdateFixedAsset(updatedAsset);
+            if (response.status === 200)
+            {
+                this.$toasted.show('User was changed.', { duration: 5000 });
+                await this.loadData();
+            }
+        }
+
         public async loadData(): Promise<void>
         {
+            this.allUsers = await AdminUserService.GetAllUsersAsync();
+            this.allUsers.push({
+               userName: '-',
+               email: '',
+               id: 0
+            });
             this.roomInfo = await AdminBuildingsService.GetRoomDataAsync(parseInt(this.$route.params.id));
         }
     }
 
 </script>
-
-<style scoped>
-
-</style>
