@@ -40,7 +40,7 @@
             </v-list>
 
             <v-divider />
-            <v-list dense>
+            <v-list dense v-if="user.isAdmin">
                 <v-list-item-group v-model="checkedMenu">
                     <v-list-item
                             v-for="(item, i) in navAdminItems"
