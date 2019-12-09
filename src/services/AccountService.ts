@@ -5,6 +5,7 @@ import LoginDto from "@/models/account/LoginDto";
 import {IDENTITY_SERVICE_BASE_URL} from "@/parameters";
 import AccountDto from "@/models/account/AccountDto";
 import AuthService from "@/services/AuthService";
+import AccountWithAssetsDto from "@/models/account/AccountWithAssetsDto";
 
 
 class AccountService
@@ -55,7 +56,12 @@ class AccountService
 
     public async GetAccountInfo(): Promise<AccountDto>
     {
-        return (await axios.get<AccountDto>('User/GetMe')).data;
+        return (await axios.get('User/GetMe')).data;
+    }
+
+    public async GetAccountInfoWithAssetsAsync(): Promise<AccountWithAssetsDto>
+    {
+        return (await axios.get('User/GetMeWithAssets')).data;
     }
 }
 

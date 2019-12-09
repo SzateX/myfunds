@@ -1,28 +1,28 @@
 <template>
     <main>
         <h1>All Users</h1>
-        <v-simple-table>
-            <template v-slot:default>
-                <thead>
-                <tr>
-                    <th style="width: 10%;" class="text-left">Id</th>
-                    <th style="width: 35%;" class="text-left">Username</th>
-                    <th style="width: 35%;" class="text-left">E-mail</th>
-                    <th style="width: 20%;" class="text-right">Options</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr :key="entry.id" v-for="entry in users">
-                    <td>{{ entry.id }}</td>
-                    <td>{{ entry.userName }}</td>
-                    <td>{{ entry.email }}</td>
-                    <td class="text-right">
-                        <v-btn outlined color="warning">EDIT</v-btn>
-                    </td>
-                </tr>
-                </tbody>
-            </template>
-        </v-simple-table>
+        <v-card :loading="loading">
+            <v-card-text>
+                <v-simple-table>
+                    <template v-slot:default>
+                        <thead>
+                        <tr>
+                            <th style="width: 10%;" class="text-left">Id</th>
+                            <th class="text-left">Username</th>
+                            <th class="text-left">E-mail</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr :key="entry.id" v-for="entry in users">
+                            <td>{{ entry.id }}</td>
+                            <td>{{ entry.userName }}</td>
+                            <td>{{ entry.email }}</td>
+                        </tr>
+                        </tbody>
+                    </template>
+                </v-simple-table>
+            </v-card-text>
+        </v-card>
     </main>
 </template>
 
@@ -37,10 +37,12 @@
     export default class AllUsers extends Vue
     {
         private users: AccountDto[] = [];
+        private loading = true;
 
         public async created(): Promise<void>
         {
             this.users = await AdminUserService.GetAllUsersAsync();
+            this.loading = false;
         }
     }
 

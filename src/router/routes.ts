@@ -46,7 +46,15 @@ const routes: any = [
                         name: 'admin.room',
                         component: () => import('@/views/admin/Room.vue'),
                         meta: { auth: true, admin: true }
-                    }
+                    },
+                    {
+                        path: 'mobile-assets',
+                        name: 'admin.mobileAssets',
+                        component: () => import('@/views/admin/MobileAssets.vue'),
+                        icon: 'mdi-home',
+                        description: 'Mobile assets',
+                        meta: { auth: true, admin: true }
+                    },
                 ]
             }
         ]
