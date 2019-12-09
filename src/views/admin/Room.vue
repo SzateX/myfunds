@@ -58,7 +58,7 @@
 
         <br />
 
-        <v-card>
+        <v-card :loading="loading3">
             <v-card-title>Add new asset</v-card-title>
             <v-card-subtitle>Here you can add new asset</v-card-subtitle>
             <v-card-text>
@@ -134,6 +134,7 @@
         private roomInfo: RoomDto | null = null;
 
         private loading = false;
+        private loading3 = false;
 
         private newAsset: NewAssetDto = {
             inUse: false,
@@ -185,6 +186,7 @@
 
             try
             {
+                this.loading3 = true;
                 const response = await AdminBuildingsService.CreateNewFixedAsset(this.newAsset);
 
                 if (response.status === 201)
@@ -199,6 +201,9 @@
             catch (ex)
             {
                 this.errors = GetStringsFromValidationResponse(ex.response.data);
+            }
+            finally {
+                this.loading3 = false;
             }
         }
 
