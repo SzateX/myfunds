@@ -41,6 +41,29 @@
                 </v-simple-table>
             </v-card-text>
         </v-card>
+
+        <br />
+
+        <v-card :loading="loading2" v-if="newRoom !== null">
+            <v-card-title>Add new room</v-card-title>
+            <v-card-subtitle>Here you can add new room</v-card-subtitle>
+            <v-card-text>
+                <v-alert v-if="errors.length > 0" type="error" outlined>
+                    Whoops... Something went wrong! Try to fix issues listed below:<br />
+                    <ul>
+                        <li :key="index" v-for="(entry, index) in errors">{{ entry }}</li>
+                    </ul>
+                </v-alert>
+                <v-form ref="formAddAsset">
+                    <v-text-field label="Area" v-model="newRoom.area" type="number" />
+                    <v-text-field label="Floor" v-model="newRoom.floor" type="number" />
+                    <v-select :items="roomTypes" label="Type" v-model="newRoom.type" />
+                </v-form>
+            </v-card-text>
+            <v-card-actions>
+                <v-btn color="success" @click="createNewRoom()">ADD NEW ROOM</v-btn>
+            </v-card-actions>
+        </v-card>
     </div>
 </template>
 
@@ -50,14 +73,78 @@
     import Vue from 'vue';
     import BuildingDto from "@/models/buildings/BuildingDto";
     import AdminBuildingsService from "@/services/AdminBuildingsService";
+    import AddRoomDto from "@/models/buildings/AddRoomDto";
+    import {GetStringsFromValidationResponse} from "@/helpers/ValidationHelper";
 
     @Component
     export default class Building extends Vue
     {
         private buildingInfo: BuildingDto | null = null;
 
-        public async created() : Promise<void>
-        {
+        private errors: string[] = [];
+        private loading2 = false;
+        private loading = true;
+        private newRoom: AddRoomDto | null = null;
+
+        private roomTypes = ['Workplace', 'Sanitary', 'Warehouse', 'Other'];
+
+        public async created() : Promise<void> {
+            await this.loadData();
+            this.clearForm();
+            this.loading = false;
+        }
+
+        public async createNewRoom(): Promise<void> {
+            if (this.newRoom === null)
+                return;
+
+            this.errors = [];
+
+            if (this.newRoom.area <= 0) {
+                this.errors.push('Area must be greater than zero.');
+                return;
+            }
+
+            if (this.newRoom.floor <= 0) {
+                this.errors.push('Floor must be greater than zero.');
+                return;
+            }
+
+            try
+            {
+                this.loading2 = true;
+                const response = await AdminBuildingsService.CreateNewRoomAsync(this.newRoom);
+
+                if (response.status === 201)
+                {
+                    this.$toasted.show('Room created successfully.', {
+                        duration: 5000
+                    });
+                    this.clearForm();
+                    await this.loadData();
+                }
+            }
+            catch (ex)
+            {
+                this.errors = GetStringsFromValidationResponse(ex.response.data);
+            }
+            finally
+            {
+                this.loading2 = false;
+            }
+        }
+
+        public clearForm(): void {
+            this.newRoom = {
+              area: 0,
+              buildingId: parseInt(this.$route.params.id),
+              floor: 0,
+              id: 0,
+              type: ''
+            };
+        }
+
+        public async loadData(): Promise<void> {
             this.buildingInfo = await AdminBuildingsService.GetBuildingDataAsync(parseInt(this.$route.params.id));
         }
     }

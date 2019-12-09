@@ -7,6 +7,8 @@ import UpdateAssetDto from "@/models/assets/UpdateAssetDto";
 import FixedAssetDto from "@/models/assets/FixedAssetDto";
 import MobileAssetDto from "@/models/assets/MobileAssetDto";
 import CreateUpdateMobileAssetDto from "@/models/assets/CreateUpdateMobileAssetDto";
+import AddBuildingDto from "@/models/buildings/AddBuildingDto";
+import AddRoomDto from "@/models/buildings/AddRoomDto";
 
 class AdminBuildingsService
 {
@@ -58,6 +60,16 @@ class AdminBuildingsService
     public async CreateNewMobileAsset(model: CreateUpdateMobileAssetDto): Promise<ApiResponse>
     {
         return await axios.post('Admin/AddMobileAsset', model);
+    }
+
+    public async CreateNewBuilding(model: AddBuildingDto): Promise<ApiResponse>
+    {
+        return await axios.post('Admin/AddBuilding', model);
+    }
+
+    public async CreateNewRoomAsync(model: AddRoomDto): Promise<ApiResponse>
+    {
+        return await axios.post('Admin/AddRoom', model);
     }
 
 
